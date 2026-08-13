@@ -1,36 +1,89 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# PromptMe
 
-## Getting Started
+A workspace to build, test, compare, and organize high-quality AI prompts. Turn trial-and-error prompting into a repeatable, versioned system.
 
-First, run the development server:
+## Tech Stack
+
+- **Framework:** Next.js 14 (App Router) + TypeScript
+- **Styling:** Tailwind CSS (heavily customized)
+- **Database:** PostgreSQL via [Neon](https://neon.tech)
+- **ORM:** Prisma
+- **Auth:** NextAuth.js v5 + custom OTP flow
+- **Email OTP:** [Resend](https://resend.com)
+- **SMS OTP:** [Twilio Verify](https://twilio.com/verify) (optional)
+- **Hosting:** Vercel
+
+## Environment Variables
+
+Copy `.env.example` to `.env.local` and fill in all values:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+cp .env.example .env.local
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+| Variable | Description |
+|---|---|
+| `DATABASE_URL` | Neon/Postgres connection string (pooled) |
+| `DIRECT_URL` | Neon/Postgres direct connection (for migrations) |
+| `NEXTAUTH_SECRET` | Random 32+ char secret (`openssl rand -base64 32`) |
+| `NEXTAUTH_URL` | Your app URL (`http://localhost:3000` in dev) |
+| `GOOGLE_CLIENT_ID` | From Google Cloud Console |
+| `GOOGLE_CLIENT_SECRET` | From Google Cloud Console |
+| `RESEND_API_KEY` | From Resend dashboard |
+| `RESEND_FROM_EMAIL` | Verified sender email |
+| `TWILIO_ACCOUNT_SID` | From Twilio (optional — SMS OTP) |
+| `TWILIO_AUTH_TOKEN` | From Twilio (optional) |
+| `TWILIO_VERIFY_SID` | Twilio Verify service SID (optional) |
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Setup
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+# 1. Install dependencies
+npm install
 
-## Learn More
+# 2. Set up environment
+cp .env.example .env.local
+# Fill in your values...
 
-To learn more about Next.js, take a look at the following resources:
+# 3. Run database migrations
+npx prisma db push
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# 4. Start development server
+npm run dev
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Open [http://localhost:3000](http://localhost:3000)
 
-## Deploy on Vercel
+## Database Migrations
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+# Push schema changes to database
+npx prisma db push
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+# Generate Prisma client after schema changes
+npx prisma generate
+
+# View/edit data in browser
+npx prisma studio
+```
+
+## Deployment (Vercel)
+
+1. Push to GitHub
+2. Import to [Vercel](https://vercel.com)
+3. Add all environment variables from `.env.example`
+4. Deploy — Vercel auto-detects Next.js
+
+## Build Phases
+
+- **Phase 1 ✅** — Auth (email/phone OTP, Google OAuth, password reset)
+- **Phase 2** — Prompt Builder + Dashboard
+- **Phase 3** — Prompt Library + Detail View
+- **Phase 4** — A/B Compare + Settings + Polish + Deploy
+
+## Auth Flows
+
+- **Signup:** Enter name + email/phone + password → verify OTP → account created
+- **Login:** Enter email/phone + password → dashboard
+- **Forgot password:** Enter email/phone → verify OTP → set new password
+- **Google OAuth:** One-click Google sign in
