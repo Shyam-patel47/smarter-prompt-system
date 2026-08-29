@@ -276,7 +276,7 @@ Output ONLY the generated prompt. No preamble, no meta-commentary, no labels lik
     while (attempt <= maxRetries && !aiSuccess) {
       try {
         const response = await ai.models.generateContent({
-          model: 'gemini-3.6-flash',
+          model: 'gemini-1.5-flash',
           contents: detailsInput,
           config: {
             systemInstruction: systemPrompt,
