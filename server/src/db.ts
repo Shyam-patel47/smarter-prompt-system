@@ -1,14 +1,17 @@
 import mongoose from 'mongoose';
-import { MongoMemoryServer } from 'mongodb-memory-server';
 
-let mongoServer: MongoMemoryServer | null = null;
+let mongoServer: any = null;
 
 const connectDB = async () => {
   try {
     let uri = process.env.MONGODB_URI;
     
     if (!uri || uri === 'your_mongodb_atlas_connection_string') {
+      if (process.env.NODE_ENV === 'production') {
+        throw new Error('CRITICAL: MONGODB_URI is strictly required in production!');
+      }
       console.log('No MONGODB_URI provided, starting in-memory MongoDB for testing...');
+      const { MongoMemoryServer } = await import('mongodb-memory-server');
       mongoServer = await MongoMemoryServer.create();
       uri = mongoServer.getUri();
     }
