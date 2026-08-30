@@ -271,6 +271,7 @@ Output ONLY the generated prompt. No preamble, no meta-commentary, no labels lik
     let generatedBody = '';
     let aiSuccess = false;
     let attempt = 0;
+    let lastError = '';
     const maxRetries = 2;
 
     while (attempt <= maxRetries && !aiSuccess) {
@@ -299,6 +300,7 @@ Output ONLY the generated prompt. No preamble, no meta-commentary, no labels lik
           console.warn(`[AI-GEN] Rate limit hit (attempt ${attempt}). Retrying in 2 seconds...`);
           await new Promise(res => setTimeout(res, 2000));
         } else {
+          lastError = errorMessage;
           console.error(`[AI-GEN] Failed after ${attempt} attempts. Falling back to deterministic template. Error:`, errorMessage);
           break; // Give up on AI, proceed to fallback
         }
@@ -327,7 +329,13 @@ Make sure to follow the tone and format constraints strictly.`;
     }
 
     // Always succeed — either with AI or fallback
-    res.status(200).json({ generatedBody });
+    res.status(200).json({ 
+      generatedBody,
+      debug: !aiSuccess ? {
+        error: lastError,
+        hasApiKey: !!process.env.GEMINI_API_KEY
+      } : undefined
+    });
   } catch (error: any) {
     // This top-level catch only fires if something outside the AI call crashes
     console.error('Unexpected Controller Error:', error);
