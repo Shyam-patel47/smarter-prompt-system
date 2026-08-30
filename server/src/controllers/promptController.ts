@@ -249,7 +249,21 @@ Your output: "Write a persuasive 250–300 word product description for a wirele
 
 Example 3 — MAXIMUM complexity input:
 User input: "exhaustive competitive analysis of two companies for investors"
-Your output should be a multi-paragraph, multi-section prompt (5-7 named sections), specifying audience, data-grounding instructions, an illustrative-figures disclaimer, and a length target — genuinely detailed, but still every sentence load-bearing, no filler.
+Your output: "Write a structured competitive analysis comparing Company A and Company B, formatted as a professional equity research note in the style of Morgan Stanley's sector coverage reports.
+
+Target audience: institutional portfolio managers with strong sector familiarity.
+Length: 1200–1500 words across four clearly labeled sections.
+Data baseline: FY2024 financials. Use approximate/illustrative figures and flag them as such.
+
+Sections:
+1. Financial Performance — compare revenue, gross margins, EBITDA, and unit economics per unit delivered.
+2. Technology & Product Pipeline — technology roadmaps, intellectual property, and manufacturing innovation.
+3. Market Strategy — geographic expansion priorities, pricing strategy across segments, and brand positioning.
+4. Regulatory & Geopolitical Risk — subsidy eligibility, tariff exposure, and supply chain concentration risk.
+
+Close with a 2-sentence forward-looking thesis on which company is better positioned for market share gains and why.
+
+Include a disclaimer stating this is an illustrative analysis for educational purposes, not investment advice."
 
 Notice: Example 1 is roughly 40 words. Example 3 should be 5-8x longer. That ratio is intentional and expected — do not compress it toward the middle.
 
