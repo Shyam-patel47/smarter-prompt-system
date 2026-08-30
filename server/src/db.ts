@@ -16,7 +16,7 @@ const connectDB = async () => {
       uri = mongoServer.getUri();
     }
     
-    await mongoose.connect(uri);
+    await mongoose.connect(uri as string);
     console.log(`MongoDB connected successfully to ${mongoServer ? 'In-Memory DB' : 'Atlas'}`);
   } catch (error) {
     console.error('MongoDB connection error:', error);
