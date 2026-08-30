@@ -10,13 +10,6 @@ export const requireValidOrigin = (req: Request, res: Response, next: NextFuncti
   const originHeader = req.headers.origin;
   const refererHeader = req.headers.referer;
 
-  // When requests come through Vercel's rewrite proxy, the browser sees
-  // it as same-origin, so it may not send an Origin or Referer header (e.g. Safari).
-  // If neither header is present, allow the request (standard same-origin behavior).
-  if (!originHeader && !refererHeader) {
-    return next();
-  }
-
   let requestOrigin = '';
   if (originHeader) {
     requestOrigin = originHeader;
