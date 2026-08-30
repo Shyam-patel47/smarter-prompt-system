@@ -187,7 +187,11 @@ export const getMe = async (req: AuthRequest, res: Response) => {
 };
 
 export const logout = (req: Request, res: Response) => {
-  res.clearCookie('token');
+  res.clearCookie('token', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+  });
   res.status(200).json({ message: 'Logged out successfully' });
 };
 
@@ -199,7 +203,11 @@ export const logoutAll = async (req: AuthRequest, res: Response) => {
     user.tokenVersion += 1;
     await user.save();
     
-    res.clearCookie('token');
+    res.clearCookie('token', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+    });
     res.status(200).json({ message: 'Logged out of all devices successfully' });
   } catch (error) {
     res.status(500).json({ message: 'Server error' });
