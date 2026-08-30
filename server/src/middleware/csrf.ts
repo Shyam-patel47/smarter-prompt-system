@@ -24,8 +24,19 @@ export const requireValidOrigin = (req: Request, res: Response, next: NextFuncti
 
   // Exact match against the allowed client URL
   if (!requestOrigin || requestOrigin !== clientUrl) {
-    console.warn(`[CSRF WARNING] Blocked ${req.method} request to ${req.originalUrl} from unauthorized origin: ${requestOrigin || 'none'}`);
-    return res.status(403).json({ message: 'Forbidden: CSRF protection blocked this request.' });
+    const debugInfo = {
+      requestOrigin,
+      clientUrl,
+      originHeader: originHeader || 'none',
+      refererHeader: refererHeader || 'none',
+      isVercelProxy: !!req.headers['x-vercel-id'],
+      allHeaders: req.headers
+    };
+    console.warn(`[CSRF WARNING] Blocked ${req.method} request to ${req.originalUrl}. Debug:`, debugInfo);
+    return res.status(403).json({ 
+      message: 'Forbidden: CSRF protection blocked this request.',
+      debug: debugInfo
+    });
   }
 
   next();
