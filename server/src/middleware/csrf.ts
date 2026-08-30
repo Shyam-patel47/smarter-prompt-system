@@ -10,6 +10,13 @@ export const requireValidOrigin = (req: Request, res: Response, next: NextFuncti
   const originHeader = req.headers.origin;
   const refererHeader = req.headers.referer;
 
+  // When requests come through Vercel's rewrite proxy, the browser sees
+  // it as same-origin, so it may not send an Origin or Referer header.
+  // If neither header is present, allow the request (same-origin behavior).
+  if (!originHeader && !refererHeader) {
+    return next();
+  }
+
   let requestOrigin = '';
   if (originHeader) {
     requestOrigin = originHeader;
@@ -23,10 +30,11 @@ export const requireValidOrigin = (req: Request, res: Response, next: NextFuncti
   }
 
   // Exact match against the allowed client URL
-  if (!requestOrigin || requestOrigin !== clientUrl) {
-    console.warn(`[CSRF WARNING] Blocked ${req.method} request to ${req.originalUrl} from unauthorized origin: ${requestOrigin || 'none'}`);
+  if (requestOrigin && requestOrigin !== clientUrl) {
+    console.warn(`[CSRF WARNING] Blocked ${req.method} request to ${req.originalUrl} from unauthorized origin: ${requestOrigin}`);
     return res.status(403).json({ message: 'Forbidden: CSRF protection blocked this request.' });
   }
 
   next();
 };
+

@@ -16,7 +16,7 @@ const issueToken = (res: Response, user: any) => {
   res.cookie('token', token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
-    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // Requires true CSRF mitigation via headers (implemented in csrf.ts)
+    sameSite: 'lax',
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
 
@@ -190,7 +190,7 @@ export const logout = (req: Request, res: Response) => {
   res.clearCookie('token', {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
-    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+    sameSite: 'lax',
   });
   res.status(200).json({ message: 'Logged out successfully' });
 };
@@ -206,7 +206,7 @@ export const logoutAll = async (req: AuthRequest, res: Response) => {
     res.clearCookie('token', {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+      sameSite: 'lax',
     });
     res.status(200).json({ message: 'Logged out of all devices successfully' });
   } catch (error) {
